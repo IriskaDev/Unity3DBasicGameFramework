@@ -17,6 +17,7 @@ namespace Rendering
         public Camera ProcessCam;
         public RawImage RawImgComp;
         public Material DefaultMat;
+        public CanvasScaler ScreenScaler;
     };
 
     public enum RESOLUTION
@@ -41,16 +42,15 @@ namespace Rendering
         {
             m_dicCrucialNodes = new Dictionary<string, LinkedListNode<IRenderingNode>>();
             m_llRenderingNodeList = new LinkedList<IRenderingNode>();
-            Initialize();
         }
 
-        private void Initialize()
+        public void Init()
         {
             CreateRenderScreen();
 
             /**************** Initiating Custom Frame Buffer ****************/
             //tmp resoultion r1280x720
-            SetResolution(RESOLUTION.R1280x720);
+            SetResolution(RESOLUTION.R1920x1080);
             /**************** Initiating Custom Frame Buffer ****************/
 
 
@@ -66,7 +66,8 @@ namespace Rendering
             m_ticker = m_csScreen.CanvasObj.AddComponent<Ticker>();
             m_csScreen.CanvasComp = m_csScreen.CanvasObj.AddComponent<Canvas>();
             m_csScreen.CanvasComp.renderMode = RenderMode.ScreenSpaceCamera;
-            m_csScreen.CanvasObj.AddComponent<CanvasScaler>();
+            m_csScreen.ScreenScaler = m_csScreen.CanvasObj.AddComponent<CanvasScaler>();
+            m_csScreen.ScreenScaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
             m_csScreen.CameraObj = new GameObject();
             m_csScreen.CameraObj.name = "ProcessCam";
             m_csScreen.ProcessCam = m_csScreen.CameraObj.AddComponent<Camera>();
@@ -96,6 +97,10 @@ namespace Rendering
             if (m_llRenderingNodeList.Count > 0)
             {
                 m_camProcessor.targetTexture = m_rtCustomFramBuffer;
+                //int culling = m_camProcessor.cullingMask;
+                //m_camProcessor.cullingMask = 0;
+                //m_camProcessor.Render();
+                //m_camProcessor.cullingMask = culling;
                 LinkedListNode<IRenderingNode> iter = m_llRenderingNodeList.First;
                 for (; iter != null; iter = iter.Next)
                 {
@@ -152,23 +157,29 @@ namespace Rendering
         public void SetResolution(RESOLUTION r)
         {
             ForceTerminateRendering();
+            Vector2 resolution;
             switch(r)
             {
                 case RESOLUTION.R1280x720:
                     m_rtCustomFramBuffer = new RenderTexture(1280, 720, 24);
+                    resolution = new Vector2(1280, 720);
                     break;
                 case RESOLUTION.R1680x1050:
                     m_rtCustomFramBuffer = new RenderTexture(1680, 1050, 24);
+                    resolution = new Vector2(1680, 1050);
                     break;
                 case RESOLUTION.R1920x1080:
                     m_rtCustomFramBuffer = new RenderTexture(1920, 1080, 24);
+                    resolution = new Vector2(1920, 1080);
                     break;
                 default:
                     m_rtCustomFramBuffer = new RenderTexture(1280, 720, 24);
+                    resolution = new Vector2(1280, 720);
                     break;
             }
             m_csScreen.RawImgComp.texture = m_rtCustomFramBuffer;
             m_csScreen.RawImgComp.material = m_csScreen.DefaultMat;
+            m_csScreen.ScreenScaler.referenceResolution = resolution;
         }
 
     }
