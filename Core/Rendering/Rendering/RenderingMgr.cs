@@ -62,32 +62,35 @@ namespace Rendering
             }
         }
 
-        public void SetResolution(RESOLUTION r)
+        public void SetResolution()
         {
             ForceTerminateRendering();
-            switch(r)
-            {
-                case RESOLUTION.R1280x720:
-                    m_csScreen.FFrameBuffer = new RenderTexture(1280, 720, 24);
-                    m_csScreen.BFrameBuffer = new RenderTexture(1280, 720, 24);
-                    m_vec2Resolution = new Vector2(1280, 720);
-                    break;
-                case RESOLUTION.R1680x1050:
-                    m_csScreen.FFrameBuffer = new RenderTexture(1680, 1050, 24);
-                    m_csScreen.BFrameBuffer = new RenderTexture(1680, 1050, 24);
-                    m_vec2Resolution = new Vector2(1680, 1050);
-                    break;
-                case RESOLUTION.R1920x1080:
-                    m_csScreen.FFrameBuffer = new RenderTexture(1920, 1080, 24);
-                    m_csScreen.BFrameBuffer = new RenderTexture(1920, 1080, 24);
-                    m_vec2Resolution = new Vector2(1920, 1080);
-                    break;
-                default:
-                    m_csScreen.FFrameBuffer = new RenderTexture(1280, 720, 24);
-                    m_csScreen.BFrameBuffer = new RenderTexture(1280, 720, 24);
-                    m_vec2Resolution = new Vector2(1280, 720);
-                    break;
-            }
+            //switch(r)
+            //{
+            //    case RESOLUTION.R1280x720:
+            //        m_csScreen.FFrameBuffer = new RenderTexture(1280, 720, 24);
+            //        m_csScreen.BFrameBuffer = new RenderTexture(1280, 720, 24);
+            //        m_vec2Resolution = new Vector2(1280, 720);
+            //        break;
+            //    case RESOLUTION.R1680x1050:
+            //        m_csScreen.FFrameBuffer = new RenderTexture(1680, 1050, 24);
+            //        m_csScreen.BFrameBuffer = new RenderTexture(1680, 1050, 24);
+            //        m_vec2Resolution = new Vector2(1680, 1050);
+            //        break;
+            //    case RESOLUTION.R1920x1080:
+            //        m_csScreen.FFrameBuffer = new RenderTexture(1920, 1080, 24);
+            //        m_csScreen.BFrameBuffer = new RenderTexture(1920, 1080, 24);
+            //        m_vec2Resolution = new Vector2(1920, 1080);
+            //        break;
+            //    default:
+            //        m_csScreen.FFrameBuffer = new RenderTexture(1280, 720, 24);
+            //        m_csScreen.BFrameBuffer = new RenderTexture(1280, 720, 24);
+            //        m_vec2Resolution = new Vector2(1280, 720);
+            //        break;
+            //}
+            m_csScreen.FFrameBuffer = new RenderTexture(Screen.width, Screen.height, 24);
+            m_csScreen.BFrameBuffer = new RenderTexture(Screen.width, Screen.height, 24);
+            m_vec2Resolution = new Vector2(Screen.width, Screen.height);
             SetFrameBuffer();
             float y = m_csScreen.ProcessCam.orthographicSize * 2.0f;
             float x = m_vec2Resolution.x / m_vec2Resolution.y * y;

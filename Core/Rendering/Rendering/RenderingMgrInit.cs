@@ -11,13 +11,7 @@ namespace Rendering
         public void Init()
         {
             CreateRenderScreen();
-
-            /**************** Initiating Custom Frame Buffer ****************/
-            //tmp resoultion r1280x720
-            SetResolution(RESOLUTION.R1920x1080);
-            /**************** Initiating Custom Frame Buffer ****************/
-
-
+            SetResolution();
             ResumeRendering();
         }
 

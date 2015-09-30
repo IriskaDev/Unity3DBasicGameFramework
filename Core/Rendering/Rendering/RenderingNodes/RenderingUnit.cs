@@ -57,6 +57,10 @@ namespace Rendering
         /// </summary>
         public void Execute(float dt, bool renderToFrameBuffer)
         {
+            if (m_camTarget.targetTexture != RenderingMgr.Instance.CFrameBuffer)
+            {
+                m_camTarget.targetTexture = RenderingMgr.Instance.CFrameBuffer;
+            }
             Update(dt);
             m_camTarget.Render();
         }

@@ -46,7 +46,7 @@ public partial class WindowMgr
         m_compRootGraphicRaycaster = m_objRootCanvas.AddComponent<GraphicRaycaster>();
         GameObject.DontDestroyOnLoad(m_objRootCanvas);
 
-        m_compRootCanvasScaler.uiScaleMode = CanvasScaler.ScaleMode.ConstantPixelSize;
+        m_compRootCanvasScaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
         m_compRootCanvasScaler.referenceResolution = new Vector2(1920, 1080);
     }
 
