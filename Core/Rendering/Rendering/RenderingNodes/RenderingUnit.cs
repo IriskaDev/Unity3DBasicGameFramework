@@ -59,11 +59,6 @@ namespace Rendering
         {
             Update(dt);
             m_camTarget.Render();
-            if (renderToFrameBuffer)
-            {
-                // let processor cam copy custom frame buffer to real frame buffer
-                m_camProcessor.targetTexture = null;
-            }
         }
     }
 }

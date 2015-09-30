@@ -113,16 +113,13 @@ namespace Rendering
         public void Execute(float dt, bool renderToFrameBuffer)
         {
             Update(dt);
-            if (renderToFrameBuffer)
+            if (!renderToFrameBuffer)
             {
-                // it's the last rendering node, render to frame buffer
-                m_camProcessor.targetTexture = null;
-            }
-            else
-            {
-                // it's not the last rendering node, render to custom frame buffer
+                // if not the last rendering node, render with ProcessCam
+                // otherwise, render with OutputCam, And Render directly into the real frame buffer
                 m_camProcessor.Render();
             }
+            RenderingMgr.Instance.BufferSwap();
         }
     }
 }

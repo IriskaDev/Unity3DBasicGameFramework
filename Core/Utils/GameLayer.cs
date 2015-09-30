@@ -13,4 +13,12 @@ static public class GameLayer
             return LayerMask.NameToLayer("UI");
         }
     }
+
+    static public int Screen
+    {
+        get
+        {
+            return LayerMask.NameToLayer("Screen");
+        }
+    }
 }
