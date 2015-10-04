@@ -17,16 +17,10 @@ namespace Rendering
         public Camera ProcessCam;
         public Camera OutputCam;
         public Material DefaultMat;
+        public Shader DefaultShader;
         public RenderTexture FFrameBuffer;
         public RenderTexture BFrameBuffer;
     };
-
-    public enum RESOLUTION
-    {
-        R1280x720 = 0,
-        R1920x1080 = 1,
-        R1680x1050 = 2
-    }
 
     public partial class RenderingMgr : Singleton<RenderingMgr>
     {
@@ -62,32 +56,12 @@ namespace Rendering
             }
         }
 
-        public void SetResolution()
+        //the resolution of rt which is used for frame buffer must strictly the same with real screen resolution
+        //otherwise the eventsystem and scaling of ugui will get into trouble
+        //eventsystem trouble means serious accuracy problem
+        public void ResetResolution()
         {
             ForceTerminateRendering();
-            //switch(r)
-            //{
-            //    case RESOLUTION.R1280x720:
-            //        m_csScreen.FFrameBuffer = new RenderTexture(1280, 720, 24);
-            //        m_csScreen.BFrameBuffer = new RenderTexture(1280, 720, 24);
-            //        m_vec2Resolution = new Vector2(1280, 720);
-            //        break;
-            //    case RESOLUTION.R1680x1050:
-            //        m_csScreen.FFrameBuffer = new RenderTexture(1680, 1050, 24);
-            //        m_csScreen.BFrameBuffer = new RenderTexture(1680, 1050, 24);
-            //        m_vec2Resolution = new Vector2(1680, 1050);
-            //        break;
-            //    case RESOLUTION.R1920x1080:
-            //        m_csScreen.FFrameBuffer = new RenderTexture(1920, 1080, 24);
-            //        m_csScreen.BFrameBuffer = new RenderTexture(1920, 1080, 24);
-            //        m_vec2Resolution = new Vector2(1920, 1080);
-            //        break;
-            //    default:
-            //        m_csScreen.FFrameBuffer = new RenderTexture(1280, 720, 24);
-            //        m_csScreen.BFrameBuffer = new RenderTexture(1280, 720, 24);
-            //        m_vec2Resolution = new Vector2(1280, 720);
-            //        break;
-            //}
             m_csScreen.FFrameBuffer = new RenderTexture(Screen.width, Screen.height, 24);
             m_csScreen.BFrameBuffer = new RenderTexture(Screen.width, Screen.height, 24);
             m_vec2Resolution = new Vector2(Screen.width, Screen.height);
@@ -97,6 +71,9 @@ namespace Rendering
             m_csScreen.ScreenQuad.transform.localScale = new Vector3(x, y, 1.0f);
             //m_csScreen.RawImgComp.texture = m_csScreen.CFrameBuffer;
             //m_csScreen.RawImgComp.material = m_csScreen.DefaultMat;
+
+
+            ResumeRendering();
         }
 
     }

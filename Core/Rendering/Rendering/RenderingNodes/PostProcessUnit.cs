@@ -12,6 +12,7 @@ namespace Rendering
     /// </summary>
     public class PostProcessUnit : IRenderingNode
     {
+        protected string m_strPPUName;
         protected Shader m_postProcessShader;
         protected Shader m_defaultShader;
         protected Material m_matScreenMat;
@@ -19,8 +20,12 @@ namespace Rendering
 
         protected PostProcessUnit()
         {
-            m_matScreenMat = RenderingMgr.Instance.ScreenInfo.DefaultMat;
-            m_defaultShader = m_matScreenMat.shader;
+
+        }
+
+        protected PostProcessUnit(string PPUName)
+        {
+            m_strPPUName = PPUName;
         }
 
         /// <summary>
@@ -28,8 +33,10 @@ namespace Rendering
         /// </summary>
         public void BaseInit()
         {
+            m_matScreenMat = RenderingMgr.Instance.ScreenInfo.DefaultMat;
+            m_defaultShader = RenderingMgr.Instance.ScreenInfo.DefaultShader;
+            m_camProcessor = RenderingMgr.Instance.ScreenInfo.ProcessCam;
             Reset();
-            SetShader();
             SetShaderParam();
             Init();
         }
@@ -45,14 +52,15 @@ namespace Rendering
 
         /// <summary>
         /// call when rendering mgr is calling resume function
+        /// and before the node execute
         /// </summary>
         public virtual void Reset()
         {
-            m_camProcessor = RenderingMgr.Instance.ScreenInfo.ProcessCam;
+            SetShader();
         }
 
         /// <summary>
-        /// call when init called
+        /// call when reset called
         /// </summary>
         private void SetShader()
         {
@@ -64,7 +72,7 @@ namespace Rendering
         }
 
         /// <summary>
-        /// call when clear called
+        /// call when BaseClear called
         /// </summary>
         private void UnSetShader()
         {
@@ -72,7 +80,7 @@ namespace Rendering
         }
 
         /// <summary>
-        /// call when init called
+        /// call when reset called
         /// for shader param initialize
         /// </summary>
         public virtual void SetShaderParam()
@@ -90,12 +98,14 @@ namespace Rendering
         }
 
         /// <summary>
-        /// call when remove from rendering node list, not able to override
+        /// call after node is executed
         /// </summary>
         public void BaseClear()
         {
-            Clear();
             UnSetShader();
+            Clear();
+            //keep this below UnSetShader();
+            RenderingMgr.Instance.BufferSwap();
         }
 
         /// <summary>
@@ -119,7 +129,14 @@ namespace Rendering
                 // otherwise, render with OutputCam, And Render directly into the real frame buffer
                 m_camProcessor.Render();
             }
-            RenderingMgr.Instance.BufferSwap();
+        }
+
+        /// <summary>
+        /// call when it's deleted from rendering node list
+        /// </summary>
+        public virtual void Dispose()
+        {
+            m_camProcessor = null;
         }
     }
 }

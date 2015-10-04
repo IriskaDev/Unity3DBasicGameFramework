@@ -64,7 +64,7 @@ public partial class WindowMgr
         m_camUICam.farClipPlane = 300.0f;
         m_camUICam.cullingMask = 1 << GameLayer.UI;
         m_camUICam.clearFlags = CameraClearFlags.Depth;
-        RenderingUnit unit = new RenderingUnit(m_camUICam);
+        RenderingUnit unit = new RenderingUnit("UINode", m_camUICam);
         RenderingMgr.Instance.AddCrucialUnitAtLast("UINode", unit);
     }
 

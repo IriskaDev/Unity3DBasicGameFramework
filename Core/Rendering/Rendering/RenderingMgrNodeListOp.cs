@@ -86,6 +86,7 @@ namespace Rendering
                 return;
 
             node.Value.BaseClear();
+            node.Value.Dispose();
             m_llRenderingNodeList.Remove(node);
         }
 

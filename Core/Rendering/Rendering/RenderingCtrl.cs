@@ -13,6 +13,9 @@ namespace Rendering
             m_csScreen.DefaultMat.SetTexture("_MainTex", m_csScreen.FFrameBuffer);
         }
 
+        /// <summary>
+        /// only called when a ppu is finish execute
+        /// </summary>
         public void BufferSwap()
         {
             RenderTexture rt = m_csScreen.FFrameBuffer;
@@ -37,16 +40,24 @@ namespace Rendering
             m_camProcessor.clearFlags = flag;
         }
 
+        private void ResetScreen()
+        {
+            m_csScreen.DefaultMat.shader = m_csScreen.DefaultShader;
+        }
+
         private void ExecuteNodeList(float dt)
         {
             if (m_llRenderingNodeList.Count > 0)
             {
+                ResetScreen();
                 ClearBuffer();
                 LinkedListNode<IRenderingNode> iter = m_llRenderingNodeList.First;
                 for (; iter != null; iter = iter.Next)
                 {
+                    iter.Value.Reset();
                     // if no next node, render to frame buffer immediately
                     iter.Value.Execute(dt, iter.Next == null);
+                    iter.Value.BaseClear();
                 }
 
                 //finish processing, copy the CFrameBuffer to the real frame buffer

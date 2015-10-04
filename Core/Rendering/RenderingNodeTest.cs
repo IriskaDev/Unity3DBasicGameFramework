@@ -7,7 +7,7 @@ public class RenderingNodeTest : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         Camera cam = GetComponent<Camera>();
-        Rendering.RenderingUnit unit = new RenderingUnit(cam);
+        Rendering.RenderingUnit unit = new RenderingUnit("SceneCam", cam);
         RenderingMgr.Instance.AddCrucialUnitAtLast("SceneCam", unit);
 	}
 	

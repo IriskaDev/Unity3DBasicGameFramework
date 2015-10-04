@@ -8,9 +8,10 @@ namespace Rendering.PostProcessUnits
 {
     public class PPUBlackAndWhite : PostProcessUnit
     {
-        public PPUBlackAndWhite()
+        public PPUBlackAndWhite() : base("BlacnAndWhite")
         {
             m_postProcessShader = Shader.Find("PostProcess/BlackAndWhite");
+            Debug.Log(m_strPPUName);
         }
 
         public override void SetShaderParam()

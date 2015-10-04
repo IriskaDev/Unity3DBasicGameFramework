@@ -11,16 +11,12 @@ namespace Rendering
         public void Init()
         {
             CreateRenderScreen();
-            SetResolution();
-            ResumeRendering();
+            ResetResolution();
         }
 
         private void CreateRenderScreen()
         {
             CreateScreenRoot();
-            CreateScreenQuad();
-            CreateProcessCam();
-            CreateOutputCam();
         }
 
         private void CreateScreenRoot()
@@ -28,6 +24,12 @@ namespace Rendering
             m_csScreen.ScreenRoot = new GameObject();
             m_csScreen.ScreenRoot.name = "ScreenRoot";
             m_csScreen.ScreenRoot.layer = GameLayer.Screen;
+
+            GameObject.DontDestroyOnLoad(m_csScreen.ScreenRoot);
+
+            CreateScreenQuad();
+            CreateProcessCam();
+            CreateOutputCam();
         }
 
         private void CreateScreenQuad()
@@ -38,8 +40,10 @@ namespace Rendering
             GameObject.Destroy(collider);
             MeshRenderer renderer = m_csScreen.ScreenQuad.GetComponent<MeshRenderer>();
             renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+            renderer.receiveShadows = false;
             renderer.useLightProbes = false;
-            m_csScreen.DefaultMat = new Material(Shader.Find("UI/Default"));
+            m_csScreen.DefaultShader = Shader.Find("UI/Default");
+            m_csScreen.DefaultMat = new Material(m_csScreen.DefaultShader);
             renderer.material = m_csScreen.DefaultMat;
             m_csScreen.ScreenQuad.transform.SetParent(m_csScreen.ScreenRoot.transform, false);
         }

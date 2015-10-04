@@ -11,5 +11,6 @@ namespace Rendering
         void Reset();
         void Execute(float dt, bool renderToFrameBuffer);
         void BaseClear();
+        void Dispose();
     }
 }
