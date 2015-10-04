@@ -34,6 +34,11 @@ static public class Dispatcher {
         TryAddDelegate(evt, func);
     }
 
+    static public void AddListener(string evt, CALLBACK_FUNC_1<object> func)
+    {
+        TryAddDelegate(evt, func);
+    }
+
     static public void AddListener<T>(string evt, CALLBACK_FUNC_1<T> func)
     {
         TryAddDelegate(evt, func);
@@ -63,6 +68,11 @@ static public class Dispatcher {
     }
 
     static public void RemoveListener(string evt, CALLBACK_FUNC func)
+    {
+        TryRemoveDelegate(evt, func);
+    }
+
+    static public void RemoveListener(string evt, CALLBACK_FUNC_1<object> func)
     {
         TryRemoveDelegate(evt, func);
     }
@@ -97,6 +107,11 @@ static public class Dispatcher {
                 continue;
             handler.Invoke();
         } while (em.MoveNext());
+    }
+
+    static public void Dispatch(string evt, object param)
+    {
+        Dispatch<object>(evt, param);
     }
 
     static public void Dispatch<T>(string evt, T param)
