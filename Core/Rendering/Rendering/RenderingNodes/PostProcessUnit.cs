@@ -123,12 +123,14 @@ namespace Rendering
         public void Execute(float dt, bool renderToFrameBuffer)
         {
             Update(dt);
-            if (!renderToFrameBuffer)
-            {
+            m_camProcessor.Render();
+            //got to think of another way to work around this
+            //doing like this will make the ppu whitch is the last element of nodelist dosent work
+            //if (!renderToFrameBuffer)
+            //{
                 // if not the last rendering node, render with ProcessCam
                 // otherwise, render with OutputCam, And Render directly into the real frame buffer
-                m_camProcessor.Render();
-            }
+            //}
         }
 
         /// <summary>
