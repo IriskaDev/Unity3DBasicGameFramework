@@ -7,9 +7,9 @@ public class Entrance : MonoBehaviour {
 	void Start () {
         Rendering.RenderingMgr.Instance.Init();
         Rendering.PostProcessUnits.PPUBlackAndWhite testppu = new Rendering.PostProcessUnits.PPUBlackAndWhite();
-        Rendering.RenderingMgr.Instance.AddUnitAtLast(testppu);
         WindowMgr.Instance.Init();
-	}
+        Rendering.RenderingMgr.Instance.AddUnitAtLast(testppu);
+    }
 	
 	// Update is called once per frame
 	void Update () {

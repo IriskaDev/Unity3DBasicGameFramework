@@ -8,7 +8,7 @@ using UnityEngine;
 namespace Rendering
 {
     /// <summary>
-    /// 
+    /// if your PostProcessUnit have muilti passes, do not render the last pass by yourself
     /// </summary>
     public class PostProcessUnit : IRenderingNode
     {
@@ -17,6 +17,7 @@ namespace Rendering
         protected Shader m_defaultShader;
         protected Material m_matScreenMat;
         protected Camera m_camProcessor;
+        protected bool m_bNeedToUnsetShader = true;
 
         protected PostProcessUnit()
         {
@@ -102,7 +103,8 @@ namespace Rendering
         /// </summary>
         public void BaseClear()
         {
-            UnSetShader();
+            if (m_bNeedToUnsetShader)
+                UnSetShader();
             Clear();
             //keep this below UnSetShader();
             RenderingMgr.Instance.BufferSwap();
@@ -124,13 +126,9 @@ namespace Rendering
         {
             Update(dt);
             m_camProcessor.Render();
-            //got to think of another way to work around this
-            //doing like this will make the ppu whitch is the last element of nodelist dosent work
-            //if (!renderToFrameBuffer)
-            //{
-                // if not the last rendering node, render with ProcessCam
-                // otherwise, render with OutputCam, And Render directly into the real frame buffer
-            //}
+            //if not the last rendering node, render with ProcessCam
+            //otherwise, render with OutputCam, And Render directly into the real frame buffer
+            m_bNeedToUnsetShader = !renderToFrameBuffer;
         }
 
         /// <summary>
