@@ -10,7 +10,8 @@ namespace GameEvents
         static public readonly string EVT_NAME = "WINDOW_STARTUP_EVENT";
 
         public int ModuleID;
-        public Dictionary<string, string> Params;
+        public bool CreateNewIns = false;
+        public object Params;
 
         public WindowStartUpEvent()
         {
