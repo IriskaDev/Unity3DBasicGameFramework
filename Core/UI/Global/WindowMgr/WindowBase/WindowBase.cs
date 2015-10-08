@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Common;
 
-public class WindowBase
+public class WindowBase : IWindow
 {
     protected int m_iModuleID;
     protected int m_iInstanceID;
@@ -17,6 +17,16 @@ public class WindowBase
     protected WindowBase()
     {
 
+    }
+
+    public int GetWinInstanceID()
+    {
+        return m_iInstanceID;
+    }
+
+    public virtual bool IsUniqeWindow()
+    {
+        return true;
     }
 
     public void BaseInit(int moduleId, int instanceId, GameObject root)

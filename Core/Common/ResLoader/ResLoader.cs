@@ -9,15 +9,15 @@ namespace Common
 {
     public static class ResLoader
     {
-        public delegate void ON_LOAD_COMPLETE(UnityEngine.Object res);
+        public delegate void ON_LOAD_COMPLETE(UnityEngine.Object res, object param);
 
-        public static void Load(string path, ON_LOAD_COMPLETE callback)
+        public static void Load(string path, ON_LOAD_COMPLETE callback, object param)
         {
             UnityEngine.Object res = Resources.Load<UnityEngine.Object>(path);
             
             if (callback != null)
             {
-                callback.Invoke(res);
+                callback.Invoke(res, param);
             }
         }
     }

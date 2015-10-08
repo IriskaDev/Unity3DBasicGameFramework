@@ -31,6 +31,7 @@ public partial class WindowMgr
             }
         }
         m_dictCurrentInsIdTail[moduleId] = instanceIdTail + 1;
+        m_hsUsedInsID.Add(instanceId);
         return instanceId;
     }
 
