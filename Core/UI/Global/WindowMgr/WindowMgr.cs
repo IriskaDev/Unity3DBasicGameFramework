@@ -11,11 +11,12 @@ public partial class WindowMgr : Singleton<WindowMgr>
     public struct WinTemplate
     {
         public int RefCnt;
+        public int ModuleID;
         public UnityEngine.Object Template;
     }
 
     private static readonly int NONUNIQE_WINDOW_TEMPLATE_CACHE_SIZE = 16;
-    private static readonly int UNIQE_WINDOW_CACHE_SIZE = 16;
+    private static readonly int WINDOW_INSTANCE_CAHCE_SIZE = 16;
 
     private HashSet<int> m_hsUsedInsID = new HashSet<int>();
     // <instanceId, IWindowBase>
@@ -67,6 +68,9 @@ public partial class WindowMgr : Singleton<WindowMgr>
             if (m_dictTemplateMapper.TryGetValue(moduleId, out template))
             {
                 GameObject root = GameObject.Instantiate(template.Template) as GameObject;
+                root.transform.SetParent(m_transWindowRoot, false);
+                root.transform.SetAsFirstSibling();
+                root.SetActive(true);
                 template.RefCnt += 1;
                 LinkedListNode<WinTemplate> node = m_llWinTemplate.Find(template);
                 m_llWinTemplate.Remove(node);
@@ -85,6 +89,7 @@ public partial class WindowMgr : Singleton<WindowMgr>
         IntermediateParams.WinLoadedParam winParam = new IntermediateParams.WinLoadedParam();
         winParam.ModuleID = moduleId;
         winParam.InstanceID = instanceId;
+        winParam.StartParam = param.Params;
         winParam.Instance = tmpIns;
         string path = Path.GetUIPath(moduleId);
         ResLoader.Load(path, OnWindowResLoaded, winParam);
@@ -94,11 +99,88 @@ public partial class WindowMgr : Singleton<WindowMgr>
     {
         IntermediateParams.WinLoadedParam interParam = param as IntermediateParams.WinLoadedParam;
         IWindow instance = interParam.Instance;
+        if (instance.IsUniqeWindow())
+        {
+            // clean job
+            if (m_llInstances.Count >= WINDOW_INSTANCE_CAHCE_SIZE)
+            {
+                LinkedListNode<IWindow> iter = m_llInstances.Last;
+                for (; iter != null; iter = iter.Previous)
+                {
+                    if (!iter.Value.GetRoot().activeSelf)
+                    {
+                        m_llInstances.Remove(iter);
+                        m_dictInstanceMapper.Remove(iter.Value.GetWinInstanceID());
+                        GameObject.Destroy(iter.Value.GetRoot());
+                        break;
+                    }
+                }
+            }
+        }
+        else
+        {
+            // clean job
+            if (m_llWinTemplate.Count >= NONUNIQE_WINDOW_TEMPLATE_CACHE_SIZE)
+            {
+                LinkedListNode<WinTemplate> iter = m_llWinTemplate.Last;
+                for (; iter != null; iter = iter.Previous)
+                {
+                    if (iter.Value.RefCnt <= 0)
+                    {
+                        m_llWinTemplate.Remove(iter);
+                        m_dictTemplateMapper.Remove(iter.Value.ModuleID);
+                        break;
+                    }
+                }
+            }
+
+            WinTemplate template;
+            template.ModuleID = interParam.ModuleID;
+            template.RefCnt = 1;
+            template.Template = res;
+            m_llWinTemplate.AddFirst(template);
+            m_dictTemplateMapper.Add(template.ModuleID, template);
+        }
+
+        //create new window
+        GameObject root = GameObject.Instantiate(res) as GameObject;
+        root.transform.SetParent(m_transWindowRoot, false);
+        root.transform.SetAsFirstSibling();
+        root.SetActive(true);
+        m_llInstances.AddFirst(instance);
+        m_dictInstanceMapper.Add(interParam.InstanceID, instance);
+
+        instance.BaseInit(interParam.ModuleID, interParam.InstanceID, root);
+        instance.Init();
+        instance.StartUp(interParam.StartParam);
+        instance.StartListener();
     }
 
     private void OnWindowClose(int instanceId)
     {
-        
+        IWindow instance;
+        if (m_dictInstanceMapper.TryGetValue(instanceId, out instance))
+        {
+            instance.RemoveListener();
+            instance.Clear();
+            if (instance.IsUniqeWindow())
+            {
+                instance.GetRoot().SetActive(false);
+            }
+            else
+            {
+                m_llInstances.Remove(instance);
+                m_dictInstanceMapper.Remove(instanceId);
+                WinTemplate template;
+                if (m_dictTemplateMapper.TryGetValue(instance.GetModuleID(), out template))
+                {
+                    template.RefCnt -= 1;
+                    m_dictTemplateMapper[instance.GetModuleID()] = template;
+                }
+                GameObject.Destroy(instance.GetRoot());
+                instance = null;
+            }
+        }
     }
 }
 

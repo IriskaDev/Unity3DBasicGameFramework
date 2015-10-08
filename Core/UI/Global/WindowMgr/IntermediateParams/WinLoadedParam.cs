@@ -9,6 +9,7 @@ namespace IntermediateParams
     {
         public int ModuleID;
         public int InstanceID;
+        public object StartParam;
         public IWindow Instance;
     }
 }

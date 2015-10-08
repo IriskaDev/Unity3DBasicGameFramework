@@ -19,6 +19,11 @@ public class WindowBase : IWindow
 
     }
 
+    public int GetModuleID()
+    {
+        return m_iModuleID;
+    }
+
     public int GetWinInstanceID()
     {
         return m_iInstanceID;
@@ -27,6 +32,11 @@ public class WindowBase : IWindow
     public virtual bool IsUniqeWindow()
     {
         return true;
+    }
+
+    public GameObject GetRoot()
+    {
+        return m_objInstanceRoot;
     }
 
     public void BaseInit(int moduleId, int instanceId, GameObject root)
