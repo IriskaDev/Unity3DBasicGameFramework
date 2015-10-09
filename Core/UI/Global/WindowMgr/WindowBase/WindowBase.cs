@@ -8,11 +8,11 @@ using Common;
 
 public class WindowBase : IWindow
 {
-    protected int m_iModuleID;
     protected int m_iInstanceID;
     protected GameObject m_objInstanceRoot;
     protected RectTransform m_transInstanceRoot;
     protected Ticker m_ticker;
+    protected WindowInfo m_wiInfo;
 
     protected WindowBase()
     {
@@ -21,7 +21,7 @@ public class WindowBase : IWindow
 
     public int GetModuleID()
     {
-        return m_iModuleID;
+        return m_wiInfo.ModuleID;
     }
 
     public int GetWinInstanceID()
@@ -31,7 +31,7 @@ public class WindowBase : IWindow
 
     public virtual bool IsUniqeWindow()
     {
-        return true;
+        return m_wiInfo.UniqeWindow;
     }
 
     public GameObject GetRoot()
@@ -41,7 +41,7 @@ public class WindowBase : IWindow
 
     public void BaseInit(int moduleId, int instanceId, GameObject root)
     {
-        m_iModuleID = moduleId;
+        m_wiInfo = WindowInfoMgr.GetWindowInfo(moduleId);
         m_iInstanceID = instanceId;
         m_objInstanceRoot = root;
         m_transInstanceRoot = root.GetComponent<RectTransform>();

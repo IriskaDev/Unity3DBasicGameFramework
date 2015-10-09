@@ -91,7 +91,7 @@ public partial class WindowMgr : Singleton<WindowMgr>
         winParam.InstanceID = instanceId;
         winParam.StartParam = param.Params;
         winParam.Instance = tmpIns;
-        string path = Path.GetUIPath(moduleId);
+        string path = Path.GetUIPath(WindowInfoMgr.GetWindowInfo(moduleId).ResName);
         ResLoader.Load(path, OnWindowResLoaded, winParam);
     }
 

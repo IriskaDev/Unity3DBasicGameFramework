@@ -9,6 +9,8 @@ public partial class WindowMgr
     {
         switch (moduleId)
         {
+            //case UIModule.LOGIN:
+            //    return new Login();
             default:
                 throw new Exception("ModuleID: " + moduleId + " Class Not Registed");
         }

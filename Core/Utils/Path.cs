@@ -6,8 +6,8 @@ using System.Text;
 
 public static class Path
 {
-    public static string GetUIPath(int moduleId)
+    public static string GetUIPath(string resName)
     {
-        return "" + moduleId;
+        return "UI/" + resName;
     }
 }

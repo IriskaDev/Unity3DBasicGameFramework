@@ -33,6 +33,7 @@ public partial class WindowMgr
         CreateUICam();
         CreateEventSystem();
         CreateWindowRoot();
+        WindowInfoMgr.Init();
     }
 
     private void CreateRootCanvas()
