@@ -178,6 +178,7 @@ public partial class WindowMgr : Singleton<WindowMgr>
                     m_dictTemplateMapper[instance.GetModuleID()] = template;
                 }
                 GameObject.Destroy(instance.GetRoot());
+                m_hsUsedInsID.Remove(instance.GetWinInstanceID());
                 instance = null;
             }
         }
