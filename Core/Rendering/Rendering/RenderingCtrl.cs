@@ -65,6 +65,7 @@ namespace Rendering
             }
         }
 
+        //mighit have a better way to implement it;
         private void ForceTerminateRendering()
         {
             m_camProcessor.targetTexture = null;
@@ -84,7 +85,12 @@ namespace Rendering
             m_driver.onPreRender = null;
         }
 
-        private void ResumeRendering()
+        public void PauseRendering()
+        {
+            m_csScreen.OutputCamObj.SetActive(false);
+        }
+
+        public void ResumeRendering()
         {
             //Add ExecuteNodeList to ticker
             LinkedListNode<IRenderingNode> iter = m_llRenderingNodeList.First;
@@ -93,6 +99,7 @@ namespace Rendering
                 iter.Value.Reset();
             }
             m_driver.onPreRender = ExecuteNodeList;
+            m_csScreen.OutputCamObj.SetActive(true);
         }
 
     }
