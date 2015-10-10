@@ -201,7 +201,7 @@ public partial class WindowMgr : Singleton<WindowMgr>
     private void OnTryOpenBufferedWindow(float dt)
     {
         // DO NOT PUT THIS CODEBLOCK INTO OnWindowLoaded or OnWindowOpen
-        // OR IT MIGHT CAUSE UNEXPECTED PROBLEM BECAUSE OF NESTING LOOP
+        // OR IT MIGHT CAUSE UNEXPECTED PROBLEM BECAUSE OF POTENTIAL NESTING LOOP
         if (m_qOpenQueue.Count > 0)
         {
             for (int i = 0; i < m_qOpenQueue.Count; ++i)
