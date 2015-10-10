@@ -6,17 +6,12 @@ using System.Text;
 
 public class ModelBase : IModule
 {
-    public virtual void Init()
+    protected ModelBase()
     {
-        
+
     }
 
     public virtual void Reset()
-    {
-        
-    }
-
-    public virtual void StartListener()
     {
         
     }
