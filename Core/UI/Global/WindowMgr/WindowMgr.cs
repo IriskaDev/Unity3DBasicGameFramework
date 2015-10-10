@@ -26,7 +26,7 @@ public partial class WindowMgr : Singleton<WindowMgr>
     private Dictionary<int, WinTemplate> m_dictTemplateMapper = new Dictionary<int, WinTemplate>();
     private LinkedList<WinTemplate> m_llWinTemplate = new LinkedList<WinTemplate>();
 
-    private bool m_bIsOpeningAWindow;
+    private bool m_bIsOpeningAWindow = false;
     private Queue<WindowStartUpEvent> m_qOpenQueue = new Queue<WindowStartUpEvent>();
 
 
