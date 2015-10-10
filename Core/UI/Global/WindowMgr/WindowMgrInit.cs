@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using Rendering;
+using Common;
 
 public partial class WindowMgr
 {
@@ -27,6 +28,8 @@ public partial class WindowMgr
     private StandaloneInputModule m_compSIModule;
     private TouchInputModule m_compTIModule;
 
+    private Ticker m_compTicker;
+
     public void Init()
     {
         CreateRootCanvas();
@@ -45,6 +48,8 @@ public partial class WindowMgr
         m_compRootCanvas = m_objRootCanvas.AddComponent<Canvas>();
         m_compRootCanvasScaler = m_objRootCanvas.AddComponent<CanvasScaler>();
         m_compRootGraphicRaycaster = m_objRootCanvas.AddComponent<GraphicRaycaster>();
+        m_compTicker = m_objRootCanvas.AddComponent<Ticker>();
+        m_compTicker.onUpdate += OnTryOpenBufferedWindow;
         GameObject.DontDestroyOnLoad(m_objRootCanvas);
 
         m_compRootCanvasScaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;

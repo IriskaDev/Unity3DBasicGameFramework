@@ -26,6 +26,9 @@ public partial class WindowMgr : Singleton<WindowMgr>
     private Dictionary<int, WinTemplate> m_dictTemplateMapper = new Dictionary<int, WinTemplate>();
     private LinkedList<WinTemplate> m_llWinTemplate = new LinkedList<WinTemplate>();
 
+    private bool m_bIsOpeningAWindow;
+    private Queue<WindowStartUpEvent> m_qOpenQueue = new Queue<WindowStartUpEvent>();
+
 
     public WindowMgr()
     {
@@ -43,6 +46,14 @@ public partial class WindowMgr : Singleton<WindowMgr>
 
     private void OnWindowOpen(WindowStartUpEvent param)
     {
+        if (m_bIsOpeningAWindow)
+        {
+            // another window is loading, put this one into open queue and return;
+            m_qOpenQueue.Enqueue(param);
+            return;
+        }
+
+        m_bIsOpeningAWindow = true;
         int moduleId = param.ModuleID;
         int instanceId = moduleId;
         IWindow tmpIns;
@@ -57,6 +68,7 @@ public partial class WindowMgr : Singleton<WindowMgr>
 
             tmpIns.StartUp(param.Params);
             tmpIns.StartListener();
+            m_bIsOpeningAWindow = false;
             return;
         }
 
@@ -82,6 +94,7 @@ public partial class WindowMgr : Singleton<WindowMgr>
                 tmpIns.Init();
                 tmpIns.StartUp(param.Params);
                 tmpIns.StartListener();
+                m_bIsOpeningAWindow = false;
                 return;
             }
         }
@@ -154,6 +167,7 @@ public partial class WindowMgr : Singleton<WindowMgr>
         instance.Init();
         instance.StartUp(interParam.StartParam);
         instance.StartListener();
+        m_bIsOpeningAWindow = false;
     }
 
     private void OnWindowClose(int instanceId)
@@ -180,6 +194,21 @@ public partial class WindowMgr : Singleton<WindowMgr>
                 GameObject.Destroy(instance.GetRoot());
                 m_hsUsedInsID.Remove(instance.GetWinInstanceID());
                 instance = null;
+            }
+        }
+    }
+
+    private void OnTryOpenBufferedWindow(float dt)
+    {
+        // DO NOT PUT THIS CODEBLOCK INTO OnWindowLoaded or OnWindowOpen
+        // OR IT MIGHT CAUSE UNEXPECTED PROBLEM BECAUSE OF NESTING LOOP
+        if (m_qOpenQueue.Count > 0)
+        {
+            for (int i = 0; i < m_qOpenQueue.Count; ++i)
+            {
+                if (m_bIsOpeningAWindow)
+                    break;
+                OnWindowOpen(m_qOpenQueue.Dequeue());
             }
         }
     }
