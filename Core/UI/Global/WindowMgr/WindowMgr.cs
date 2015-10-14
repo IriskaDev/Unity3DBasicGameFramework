@@ -81,7 +81,7 @@ public partial class WindowMgr : Singleton<WindowMgr>
             {
                 GameObject root = GameObject.Instantiate(template.Template) as GameObject;
                 root.transform.SetParent(m_transWindowRoot, false);
-                root.transform.SetAsFirstSibling();
+                root.transform.SetAsLastSibling();
                 root.SetActive(true);
                 template.RefCnt += 1;
                 LinkedListNode<WinTemplate> node = m_llWinTemplate.Find(template);
@@ -158,7 +158,7 @@ public partial class WindowMgr : Singleton<WindowMgr>
         //create new window
         GameObject root = GameObject.Instantiate(res) as GameObject;
         root.transform.SetParent(m_transWindowRoot, false);
-        root.transform.SetAsFirstSibling();
+        root.transform.SetAsLastSibling();
         root.SetActive(true);
         m_llInstances.AddFirst(instance);
         m_dictInstanceMapper.Add(interParam.InstanceID, instance);
