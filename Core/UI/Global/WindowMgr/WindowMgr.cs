@@ -13,6 +13,19 @@ public partial class WindowMgr : Singleton<WindowMgr>
         public int RefCnt;
         public int ModuleID;
         public UnityEngine.Object Template;
+        public static bool operator ==(WinTemplate x, WinTemplate y)
+        {
+            return x.ModuleID == y.ModuleID ? true : false;
+        }
+        public static bool operator !=(WinTemplate x, WinTemplate y)
+        {
+            return x.ModuleID == y.ModuleID ? false : true;
+        }
+        public override bool Equals(object obj)
+        {
+            WinTemplate target = (WinTemplate)obj;
+            return target.ModuleID == this.ModuleID ? true : false;
+        }
     }
 
     private static readonly int NONUNIQE_WINDOW_TEMPLATE_CACHE_SIZE = 16;
@@ -66,17 +79,22 @@ public partial class WindowMgr : Singleton<WindowMgr>
             m_llInstances.Remove(node);
             m_llInstances.AddFirst(node);
 
-            tmpIns.StartUp(param.Params);
             tmpIns.StartListener();
+            tmpIns.StartUp(param.Params);
             m_bIsOpeningAWindow = false;
             return;
         }
 
         // not in the cache, but it's not a uniqe window
         tmpIns = GetWinInstance(moduleId);
-        if (!tmpIns.IsUniqeWindow())
+        //tmpIns.SetWindowInfo(moduleId);
+        //if (!tmpIns.IsUniqeWindow())
+        if (!WindowInfoMgr.GetWindowInfo(moduleId).UniqeWindow)
         {
             WinTemplate template;
+            // resources is already loaded
+            // create a new window immediately
+            instanceId = GetInstanceID(moduleId);
             if (m_dictTemplateMapper.TryGetValue(moduleId, out template))
             {
                 GameObject root = GameObject.Instantiate(template.Template) as GameObject;
@@ -86,14 +104,13 @@ public partial class WindowMgr : Singleton<WindowMgr>
                 template.RefCnt += 1;
                 LinkedListNode<WinTemplate> node = m_llWinTemplate.Find(template);
                 m_llWinTemplate.Remove(node);
-                m_llWinTemplate.AddFirst(node);
-
+                m_llWinTemplate.AddFirst(template);
+                m_dictInstanceMapper.Add(instanceId, tmpIns);
                 m_dictTemplateMapper[moduleId] = template;
-                instanceId = GetInstanceID(moduleId);
                 tmpIns.BaseInit(moduleId, instanceId, root);
                 tmpIns.Init();
-                tmpIns.StartUp(param.Params);
                 tmpIns.StartListener();
+                tmpIns.StartUp(param.Params);
                 m_bIsOpeningAWindow = false;
                 return;
             }
@@ -165,8 +182,8 @@ public partial class WindowMgr : Singleton<WindowMgr>
 
         instance.BaseInit(interParam.ModuleID, interParam.InstanceID, root);
         instance.Init();
-        instance.StartUp(interParam.StartParam);
         instance.StartListener();
+        instance.StartUp(interParam.StartParam);
         m_bIsOpeningAWindow = false;
     }
 
